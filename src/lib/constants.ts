@@ -1,0 +1,1 @@
+export const NEWS_API_ORG_KEY = process.env.NEXT_PUBLIC_NEWS_API_ORG_KEY;
