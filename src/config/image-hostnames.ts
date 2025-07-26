@@ -23,5 +23,8 @@ export const imageHostnames = [
   "www.kqed.org",
   "images.axios.com",
   "dn.kqed.org",
-  "cdn.kqed.org"
+  "cdn.kqed.org",
+  "www.politico.com",
+  "s.yimg.com",
+  "variety.com"
 ];
