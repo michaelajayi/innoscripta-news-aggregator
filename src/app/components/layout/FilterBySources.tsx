@@ -1,40 +1,61 @@
-import { useQuery } from "@tanstack/react-query";
-import { INewsApiSourcesResponse } from "@/lib/types/articles.interface";
-import { NewsApiService } from "@/lib/services/NewsApiService";
+import {
+  INewsApiSource,
+  INewsApiSourcesResponse,
+} from "@/lib/types/articles.interface";
+import MultiSelect from "./MultiSelect";
+import { useArticleSources } from "@/lib/hooks/useArticlesHooks";
 
-const newsApiService = new NewsApiService(
-  process.env.NEXT_PUBLIC_NEWS_API_ORG_KEY!,
-);
+interface OptionType {
+  value: string;
+  label: string;
+}
 
-const FilterBySources = () => {
-  const { isLoading, error, data, isFetching } = useQuery({
-    queryKey: ["article-sources"],
-    queryFn: () => newsApiService.getSources(),
-  });
+interface FilterBySourcesProps {
+  selectedSources: OptionType[];
+  onSourcesChange: (sources: OptionType[]) => void;
+}
 
-  if (isLoading) return <div className="my-5">Loading...</div>;
+const FilterBySources = ({
+  selectedSources,
+  onSourcesChange,
+}: FilterBySourcesProps) => {
+  // Get article sources
+  const {
+    isLoading: isSourcesLoading,
+    error: sourcesError,
+    data: sourcesData,
+    isFetching: isSourcesFetching,
+  } = useArticleSources();
 
-  if (error) return "An error occured. " + error.message;
+  const data = sourcesData as INewsApiSourcesResponse;
+  const sourceOptions = data?.sources.map((source) => ({
+    value: source.id,
+    label: source.name,
+  }));
 
-  const sources = data as INewsApiSourcesResponse;
+  if (isSourcesLoading) return <div className="my-5">Loading...</div>;
 
-  const noSourcesData =
-    !sources || sources.status === "error" || !sources.sources;
+  if (sourcesError)
+    return (
+      <div className="py-5">
+        <p>An error occured - {sourcesError?.message}</p>
+      </div>
+    );
 
   return (
-    <div>
+    <div className="bg-white p-3 rounded-sm shadow-xs">
       <p className="text-black">By sources</p>
-      {isFetching ? (
+      {isSourcesFetching ? (
         <p className="py-5">Updating...</p>
       ) : (
-        <ul className="h-full py-5">
-          {!noSourcesData &&
-            sources.sources.map((source, index) => (
-              <li key={index} className="text-black">
-                {source.name}
-              </li>
-            ))}
-        </ul>
+        <div className="py-5 flex flex-col space-y-2">
+          <MultiSelect
+            options={sourceOptions}
+            placeholder="Select news sources..."
+            onChange={onSourcesChange}
+            value={selectedSources}
+          />
+        </div>
       )}
     </div>
   );
