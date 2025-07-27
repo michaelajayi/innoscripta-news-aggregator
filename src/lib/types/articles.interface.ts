@@ -85,7 +85,6 @@ export interface INewsApiSearchResponse {
   status: 'ok' | 'error';
   totalResults: number;
   articles: INewsApiSearch[]
-  
 }
 
 export type INewsApiResponse = INewsApiSourcesResponse | INewsApiSearchResponse;

@@ -86,6 +86,14 @@ export class NewsApiService {
     });
   }
 
+  async filterArticles(params?: { sources?: string; category?: string }) {
+    // console.log("params", params);
+    return this.makeRequest("/top-headlines", {
+      ...(params?.sources && { sources: params.sources }),
+      ...(params?.category && { category: params.category }),
+    });
+  }
+
   async searchArticles(params: { q: string }) {
     return this.makeRequest("/everything", {
       q: params.q,

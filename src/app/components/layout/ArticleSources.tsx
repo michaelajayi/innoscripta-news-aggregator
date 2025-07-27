@@ -12,9 +12,14 @@ const ArticleSources = () => {
     queryFn: () => newsApiService.getSources(),
   });
 
+
   if (isLoading) return "Loading...";
 
-  if (error) return "An error occured." + error.message;
+  if (error) return (
+    <div className="py-5">
+      <p>An error occured - {error?.message}</p>
+    </div>
+  );
 
   // Type guard to check if data has sources property
   const sourcesData = data as INewsApiSourcesResponse;
