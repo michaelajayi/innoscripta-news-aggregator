@@ -1,20 +1,18 @@
-import { NewsAPIOrgService } from "@/lib/services/NewsAPI";
+import { NewsApiService } from "@/lib/services/NewsApiService";
 import { useQuery } from "@tanstack/react-query";
 import { INewsApiSourcesResponse } from "@/lib/types/articles.interface";
 
-const apiOrgNewsService = new NewsAPIOrgService(
+const newsApiService = new NewsApiService(
   process.env.NEXT_PUBLIC_NEWS_API_ORG_KEY!,
 );
 
 const ArticleSources = () => {
-  const { isPending, error, data, isFetching } = useQuery({
+  const { isLoading, error, data, isFetching } = useQuery({
     queryKey: ["article-sources"],
-    queryFn: () => apiOrgNewsService.getSources(),
+    queryFn: () => newsApiService.getSources(),
   });
 
-  console.log("data", data);
-
-  if (isPending) return "Loading...";
+  if (isLoading) return "Loading...";
 
   if (error) return "An error occured." + error.message;
 

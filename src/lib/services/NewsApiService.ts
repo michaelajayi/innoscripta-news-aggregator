@@ -4,7 +4,7 @@ import {
   INewsApiResult,
 } from "../types/articles.interface";
 
-export class NewsAPIOrgService {
+export class NewsApiService {
   private apiKey: string;
   private baseUrl = "https://newsapi.org/v2";
 
@@ -47,8 +47,6 @@ export class NewsAPIOrgService {
     if (!response.ok) {
       this.handleApiError(response);
     }
-
-    // console.log(await response.json());
 
     return response.json();
   }

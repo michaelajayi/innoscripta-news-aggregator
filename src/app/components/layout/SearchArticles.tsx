@@ -1,12 +1,12 @@
 import useDebounce from "@/lib/hooks/useDebounce";
-import { NewsAPIOrgService } from "@/lib/services/NewsAPI";
+import { NewsApiService } from "@/lib/services/NewsApiService";
 import { INewsApiSearchResponse } from "@/lib/types/articles.interface";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { MdCancel } from "react-icons/md";
 import ArticleSearchResult from "./ArticleSearchResult";
 
-const apiOrgNewsService = new NewsAPIOrgService(
+const newsApiService = new NewsApiService(
   process.env.NEXT_PUBLIC_NEWS_API_ORG_KEY!,
 );
 
@@ -20,15 +20,18 @@ const SearchArticle = () => {
     setSearchQuery(e.target.value);
   };
 
-  const { isPending, error, data, refetch } = useQuery({
-    queryKey: ["articles-search"],
+  const { isLoading, isPending, error, data, refetch } = useQuery({
+    queryKey: debouncedSearchQuery
+      ? ["articles-search", debouncedSearchQuery]
+      : ["articles-search"],
     queryFn: () =>
-      apiOrgNewsService.searchArticles({
+      newsApiService.searchArticles({
         q: debouncedSearchQuery,
       }),
     enabled: false,
   });
 
+  // Add these debug logs
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -51,10 +54,8 @@ const SearchArticle = () => {
     console.log("No result");
   }
 
-  console.log("searchResult", searchResult);
-
   return (
-    <div className="w-full min-h-screen max-w-4xl">
+    <div className="w-full min-h-screen max-w-4xl px-20 py-10">
       {debouncedSearchQuery && (
         <div className="text-5xl text-gray-600 capitalize my-5">
           {debouncedSearchQuery}
@@ -71,7 +72,7 @@ const SearchArticle = () => {
               type="text"
               name="search"
               value={searchQuery}
-              placeholder="Search by keyword"
+              placeholder="Search by keyword e.g. Apple"
               className="w-full h-full py-3 px-3 border-none outline-none"
               onChange={handleSearchChange}
             />
@@ -87,7 +88,7 @@ const SearchArticle = () => {
           <div>
             <button
               type="submit"
-              disabled={!isPending}
+              disabled={isLoading || !searchQuery.trim()}
               className="bg-black text-white py-3 px-5 rounded-md flex justify-center items-center border-none outline-none cursor-pointer"
             >
               Search
@@ -97,13 +98,17 @@ const SearchArticle = () => {
       </form>
 
       {/* search result */}
-      <div className="flex flex-col space-y-10">
-        {searchResult?.articles &&
-          searchResult.articles.length > 0 &&
-          searchResult.articles.map((article, index) => (
-            <ArticleSearchResult article={article} key={index} />
-          ))}
-      </div>
+      {isLoading ? (
+        <p>Searching...</p>
+      ) : (
+        <div className="flex flex-col space-y-10">
+          {searchResult?.articles &&
+            searchResult.articles.length > 0 &&
+            searchResult.articles.map((article, index) => (
+              <ArticleSearchResult article={article} key={index} />
+            ))}
+        </div>
+      )}
     </div>
   );
 };
