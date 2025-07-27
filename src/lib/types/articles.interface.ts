@@ -5,8 +5,15 @@ export interface INewsSource {
   category: string;
 }
 
-export type Category = 'general' | 'business'| 'entertainment' | 'health' |'science'| 'sports' | 'technology';
-  
+export type Category =
+  | "general"
+  | "business"
+  | "entertainment"
+  | "health"
+  | "science"
+  | "sports"
+  | "technology";
+
 export interface IArticle {
   id: string;
   title: string;
@@ -30,6 +37,57 @@ export interface INewsApiArticle {
   description: string;
   url: string;
   urlToImage: string | null;
+  content: string;
+}
+
+export interface INewsArticlesResponse {
+  status: 'ok' | 'error';
+  totalResults: number;
+  articles: INewsApiArticle[];
+}
+
+export interface INewsApiErrorResponse {
+  status: "error";
+  code: string;
+  message: string;
+}
+
+export interface INewsApiSource {
+  id: string;
+  name: string;
+  description: string;
+  url: string;
+  category: string;
+  language: string;
+  country: string;
+}
+
+export interface INewsApiSourcesResponse {
+  status: "ok" | "error";
+  sources: INewsApiSource[];
+}
+
+export interface INewsApiSearch {
+  source: {
+    id: string,
+    name: string
+  },
+  author: string;
+  title: string;
+  description: string;
+  url: string;
+  urlToImage: string;
   publishedAt: string;
   content: string;
 }
+
+export interface INewsApiSearchResponse {
+  status: 'ok' | 'error';
+  totalResults: number;
+  articles: INewsApiSearch[]
+  
+}
+
+export type INewsApiResponse = INewsApiSourcesResponse | INewsApiSearchResponse;
+
+export type INewsApiResult = INewsApiResponse | INewsApiErrorResponse;
