@@ -46,7 +46,7 @@ const FilteredArticles = ({
   }
 
   return (
-    <div className="w-full max-w-4xl px-10 py-10 mx-auto bg-white rounded-sm">
+    <div className="w-full max-w-4xl px-5 lg:px-10 py-10 mx-auto bg-white rounded-sm">
       {articles && articles.length > 0 ? (
         <div className="flex flex-col space-y-5">
           <div>

@@ -1,5 +1,5 @@
-export const formatDate = (date: Date | string) => {
-  const dateObj = date instanceof Date ? date : new Date(date);
+export const formatDate = (date: Date | string | null | undefined) => {
+  const dateObj = date instanceof Date ? date : new Date(date!);
   
   const formatter = new Intl.DateTimeFormat('en-US', {
     year: 'numeric',

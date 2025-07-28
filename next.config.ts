@@ -9,11 +9,19 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 const nextConfig: NextConfig = {
   /* config options here */
+  // images: {
+  //   remotePatterns: imageHostnames.map((hostname) => ({
+  //     protocol: "https",
+  //     hostname,
+  //   })),
+  // },
   images: {
-    remotePatterns: imageHostnames.map((hostname) => ({
-      protocol: "https",
-      hostname,
-    })),
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: "**"
+      }
+    ],
   },
 };
 

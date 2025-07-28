@@ -1,9 +1,6 @@
-import {
-  INewsApiSource,
-  INewsApiSourcesResponse,
-} from "@/lib/types/articles.interface";
-import MultiSelect from "./MultiSelect";
 import { useArticleSources } from "@/lib/hooks/useArticlesHooks";
+import { INewsApiSourcesResponse } from "@/lib/types/articles.interface";
+import MultiSelect from "./MultiSelect";
 
 interface OptionType {
   value: string;
@@ -44,7 +41,9 @@ const FilterBySources = ({
 
   return (
     <div className="bg-white p-3 rounded-sm shadow-xs">
-      <p className="text-black">By sources</p>
+      <strong>
+        <p className="text-black">By sources</p>
+      </strong>
       {isSourcesFetching ? (
         <p className="py-5">Updating...</p>
       ) : (

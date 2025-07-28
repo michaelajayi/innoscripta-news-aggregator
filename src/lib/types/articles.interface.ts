@@ -24,7 +24,7 @@ export interface IArticle {
   imageUrl: string | null;
   publishedAt: Date;
   source: INewsSource;
-  category: Category;
+  category: ECategory;
   author: string | null;
 }
 
@@ -37,8 +37,10 @@ export interface INewsApiArticle {
   title: string;
   description: string;
   url: string;
-  urlToImage: string | null;
+  urlToImage?: string | null;
+  imageUrl?: string | null;
   content: string;
+  publishedAt?: Date | string | null;
 }
 
 export interface INewsArticlesResponse {

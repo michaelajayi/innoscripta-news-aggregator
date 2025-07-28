@@ -28,27 +28,27 @@ const SearchArticle = ({ isSearchLoading, searchError, searchQuery, updateSearch
   if (searchError) return <div>An error occured - {searchError?.message}</div>
 
   return (
-    <div className="w-full max-w-4xl mx-auto pt-5">
+    <div className="w-full max-w-4xl mx-auto">
       <div className="flex flex-col space-y-1 p-5 rounded-sm">
         {searchQuery && (
-          <div className="text-5xl text-gray-600 capitalize my-5">
+          <div className="text-5xl text-gray-600 capitalize">
             {searchQuery}
           </div>
         )}
 
         <div className="flex flex-col space-y-1 items-start w-full">
           <form
-            className="flex flex-col space-y-3 my-5 bg-white p-5 w-full"
+            className="flex flex-col space-y-2  p-5 w-full"
             onSubmit={handleSubmit}
           >
-            <div className="w-full flex space-x-2">
-              <div className="w-full flex space-x-2 items-center rounded-md border border-gray-300 relative">
+            <div className="w-full flex flex-col lg:flex-row space-y-3 lg:space-y-0 lg:space-x-2">
+              <div className="w-full flex items-center rounded-md border border-gray-300 relative focus:bg-white">
                 <input
                   type="text"
                   name="search"
                   value={searchQuery}
-                  placeholder="Search by keyword e.g. Apple"
-                  className="w-full h-full py-3 px-3 border-none outline-none focus:bg-white shadow-none"
+                  placeholder="Search by keyword e.g. Apple Vision Pro"
+                  className="w-full h-full py-3 px-3 border-none outline-none focus:bg-white shadow-none rounded-md"
                   onChange={handleSearchChange}
                 />
                 {searchQuery && (
@@ -64,14 +64,14 @@ const SearchArticle = ({ isSearchLoading, searchError, searchQuery, updateSearch
                 <button
                   type="submit"
                   disabled={isSearchLoading || !searchQuery.trim()}
-                  className="bg-black text-white py-3 px-5 rounded-md flex justify-center items-center border-none outline-none cursor-pointer"
+                  className="bg-black text-white py-3 px-5 rounded-md flex justify-center items-center border-none outline-none cursor-pointer hover:bg-black/80 w-full"
                 >
                   Search
                 </button>
               </div>
             </div>
           </form>
-          <div className="flex space-x-2 items-center">
+          <div className="hidden lg:flex space-x-2 items-center">
             <IoMdInformationCircleOutline />
             <small className="text-gray-500 text-center">
               Select news sources from the sidebar to see filtered articles

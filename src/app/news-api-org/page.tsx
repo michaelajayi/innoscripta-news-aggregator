@@ -2,11 +2,13 @@
 import {
   useArticleFilter,
   useArticleSearch,
+  useCategoryFilter,
   useArticleSearchInitial,
 } from "@/lib/hooks/useArticlesHooks";
 import { useEffect, useState } from "react";
 import FilterBySources from "../components/layout/FilterBySources";
 import FilterByCategory from "../components/layout/FilterByCategory";
+import FilterByDate from "../components/layout/FilterByDate";
 import FilteredArticles from "../components/layout/FilteredArticles";
 import SearchArticle from "../components/layout/SearchArticles";
 import useDebounce from "@/lib/hooks/useDebounce";
@@ -15,6 +17,9 @@ import {
   INewsArticlesResponse,
 } from "@/lib/types/articles.interface";
 import TopCategories from "../components/layout/TopCategories";
+import Link from "next/link";
+import { RiMenu2Fill, RiCloseLargeFill } from "react-icons/ri";
+import { useMediaQuery } from 'react-responsive'
 
 interface OptionType {
   value: string;
@@ -22,12 +27,22 @@ interface OptionType {
 }
 
 const NewsAPIOrg = () => {
+  const isMobile = useMediaQuery({ query: '(max-width: 768px)' })
+  
   const [selectedSources, setSelectedSources] = useState<OptionType[]>([]);
-  const [selectedCategories, setSelectedCategories] = useState<OptionType[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<OptionType[]>(
+    [],
+  );
+  const [singleCategory, setSingleCategory] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState("");
   const [filtered, setFiltered] = useState<INewsApiArticle[] | null>(null);
   const [loadingText, setLoadingText] = useState<string>("");
   const [totalCount, setTotalCount] = useState<number>(0);
+  const [dateFilter, setDateFilter] = useState("newest");
+  const [showHamburger, setShowHamburger] = useState<boolean>(false);
+  const [filteredDateData, setFilteredDateData] = useState<
+    [INewsApiArticle] | null
+  >(null);
 
   const debouncedSearchQuery = useDebounce(searchQuery.trim(), 500);
 
@@ -43,18 +58,27 @@ const NewsAPIOrg = () => {
     },
     selectedSources.length > 0,
   );
-  
+
   // Filter articles based on selected categories
   const {
     isLoading: isCategoryLoading,
     data: categoryData,
     isFetching: isCategoryFetching,
-  } = useArticleFilter(
+  } = useCategoryFilter(
     {
       category: selectedCategories.map((s) => s.value).join(","),
     },
-    selectedSources.length > 0,
+    selectedCategories.length > 0,
   );
+
+  // Filter articles based on selected single categories
+  const { data: singleCategoryData, isFetching: isSingleCategoryFetching } =
+    useCategoryFilter(
+      {
+        category: singleCategory,
+      },
+      singleCategory.length > 0,
+    );
 
   const {
     isLoading: isSearchLoading,
@@ -68,12 +92,10 @@ const NewsAPIOrg = () => {
 
   const {
     isLoading: initialLoading,
-    error: initialError,
     data: initialData,
-    refetch: initialRefetch,
     isFetching: isInitialFetching,
   } = useArticleSearchInitial({
-    q: "innoscripta",
+    q: "Apple Vision Pro",
   });
 
   useEffect(() => {
@@ -118,6 +140,48 @@ const NewsAPIOrg = () => {
   }, [categoryData]);
 
   useEffect(() => {
+    const categoryResponse = singleCategoryData as INewsArticlesResponse;
+    const singleCategoryFiltered = categoryResponse?.articles || [];
+
+    if (isSearchLoading) {
+      updateLoadingText();
+    }
+
+    if (singleCategoryFiltered && singleCategoryFiltered.length > 0) {
+      setFiltered(singleCategoryFiltered);
+      setTotalCount(categoryResponse.totalResults);
+    }
+  }, [singleCategoryData]);
+
+  useEffect(() => {
+    if (dateFilter === "newest") {
+      const filteredData =
+        filtered &&
+        filtered.sort(
+          (a, b) =>
+            new Date(b.publishedAt!).getTime() -
+            new Date(a.publishedAt!).getTime(),
+        );
+
+      if (filteredData) {
+        setFiltered(filteredData);
+      }
+    } else if (dateFilter === "oldest") {
+      const filteredData =
+        filtered &&
+        filtered.sort(
+          (a, b) =>
+            new Date(a.publishedAt!).getTime() -
+            new Date(b.publishedAt!).getTime(),
+        );
+
+      if (filteredData) {
+        setFiltered(filteredData);
+      }
+    }
+  }, [dateFilter, filtered]);
+
+  useEffect(() => {
     const initialResponse = initialData as INewsArticlesResponse;
     const initialFiltered = initialResponse?.articles || [];
 
@@ -146,43 +210,72 @@ const NewsAPIOrg = () => {
 
   const handleCategoryChanges = (categories: OptionType[]) => {
     setSelectedCategories(categories);
-    // console.log('selected', selectedCategories);
   };
 
   const updateLoadingText = () => {
     if (isSearchLoading) {
       setLoadingText("Searching...");
     } else if (isFilterLoading) {
-      setLoadingText("Filtering from ");
+      setLoadingText("Filtering: ");
     } else {
       setLoadingText("");
     }
   };
 
   return (
-    <section className="min-h-screen flex">
-      <div className="w-full lg:w-1/4 fixed left-0 top-0 h-full z-10 bg-gray-50">
-        <section className="w-full h-full py-10">
-          <div className="p-5 flex flex-col space-y-10 h-full">
-            <h2 className="font-medium text-4xl text-black">News Aggregator</h2>
-            <div className="flex flex-col space-y-10">
-              <FilterBySources
-                selectedSources={selectedSources}
-                onSourcesChange={handleSourcesChange}
-              />
-              <FilterByCategory
-                selectedCategories={selectedCategories}
-                onCategoryChange={handleCategoryChanges}
-              />
+    <section className="w-screen h-full min-h-screen lg:flex">
+      <div className="w-full lg:w-1/4 lg:fixed left-0 top-0 h-full z-10 bg-gray-50">
+        <section className="lg:flex w-full h-full py-5 lg:py-10">
+          <div className="p-5 flex flex-col space-y-10 h-full w-full">
+            <div className="w-full flex justify-between items-center">
+              <Link
+                href="/"
+                className="font-medium text-3xl lg:text-4xl text-black"
+              >
+                News Aggregator
+              </Link>
+
+              <div className="lg:hidden flex cursor-pointer">
+                {showHamburger ? (
+                  <div onClick={() => setShowHamburger(!showHamburger)}>
+                    <RiCloseLargeFill size={25} />
+                  </div>
+                ) : (
+                  <div onClick={() => setShowHamburger(!showHamburger)}>
+                    <RiMenu2Fill size={25} />
+                  </div>
+                )}
+              </div>
             </div>
+
+            {/* filter controls */}
+            {!isMobile && (
+              <div className="flex flex-col space-y-5 lg:space-y-10 w-full">
+                <FilterBySources
+                  selectedSources={selectedSources}
+                  onSourcesChange={handleSourcesChange}
+                />
+                <FilterByCategory
+                  selectedCategories={selectedCategories}
+                  onCategoryChange={handleCategoryChanges}
+                />
+                <FilterByDate
+                  dateFilter={dateFilter}
+                  updateDateFilter={(filter) => setDateFilter(filter)}
+                />
+              </div>
+            )}
           </div>
         </section>
       </div>
-      <div className="w-full lg:w-3/4 lg:ml-[25%] min-h-screen overflow-y-auto">
-        <div className="flex flex-col space-y-5">
+      <div className="w-screen lg:w-3/4 lg:ml-[25%] min-h-screen overflow-y-auto">
+        <div className="flex flex-col space-y-1">
           {/* categories */}
-          <TopCategories />
-          
+          <TopCategories
+            category={singleCategory}
+            updateCategory={(value: string) => setSingleCategory(value)}
+          />
+
           {/* Search field */}
           <SearchArticle
             isSearchLoading={isSearchLoading}
@@ -191,7 +284,7 @@ const NewsAPIOrg = () => {
             updateSearch={handleSearchUpdate}
             searchRefetch={searchRefetch}
           />
-          
+
           <FilteredArticles
             isLoading={
               isFilterLoading ||
@@ -199,7 +292,10 @@ const NewsAPIOrg = () => {
               isSearchLoading ||
               isSearchFetching ||
               initialLoading ||
-              isInitialFetching || isCategoryFetching || isCategoryLoading
+              isInitialFetching ||
+              isCategoryFetching ||
+              isCategoryLoading ||
+              isSingleCategoryFetching
             }
             loadingText={loadingText}
             error={filterError}

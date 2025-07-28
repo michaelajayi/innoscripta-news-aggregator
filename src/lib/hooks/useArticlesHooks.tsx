@@ -1,9 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 import { NewsApiService } from '../services/NewsApiService';
 
-interface IFilterArticle {
-  sources?: string;
-  category?: string;
+interface IFilterArticleBySource {
+  sources: string;
+}
+
+interface IFilterArticleByCategory {
+  category: string;
 }
 
 interface ISearchFilters {
@@ -30,11 +33,23 @@ export const useArticleSources = () => {
 //   });
 // }
 
-export const useArticleFilter = (filters: IFilterArticle, enabled=false) => {
-  const hasFilters = !!filters.sources || !!filters.category;
+export const useArticleFilter = (filters: IFilterArticleBySource, enabled=false) => {
+  const hasFilters = !!filters.sources
   return useQuery({
-    queryKey: ['filter-article', filters?.sources, filters?.category],
+    queryKey: ['source-filter', filters.sources],
     queryFn: () => newsApiService.filterArticles(filters),
+    enabled: enabled && hasFilters,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+}
+
+export const useCategoryFilter = (filters: IFilterArticleByCategory, enabled=false) => {
+  const hasFilters = !!filters.category;
+  return useQuery({
+    queryKey: ['category-filter', filters?.category],
+    queryFn: () => newsApiService.filterArticlesByCategory({
+      category: filters.category
+    }),
     enabled: enabled && hasFilters,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });

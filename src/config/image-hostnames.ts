@@ -1,3 +1,5 @@
+// can no longer use this pattern, News API randomized image urls, this cannot be dynamically determined within the time constraint
+
 export const imageHostnames = [
   "i.insider.com",
   "npr.brightspotcdn.com",
