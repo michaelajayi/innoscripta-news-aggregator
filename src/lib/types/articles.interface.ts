@@ -4,15 +4,16 @@ export interface INewsSource {
   domain: string;
   category: string;
 }
-
-export type Category =
-  | "general"
-  | "business"
-  | "entertainment"
-  | "health"
-  | "science"
-  | "sports"
-  | "technology";
+  
+export enum ECategory {
+  GENERAL = "general",
+  BUSINESS = "business",
+  ENTERTAINMENT = "entertainment",
+  HEALTH = "health",
+  SCIENCE = "science",
+  SPORTS = "sports",
+  TECHNOLOGY = "technology"
+}
 
 export interface IArticle {
   id: string;

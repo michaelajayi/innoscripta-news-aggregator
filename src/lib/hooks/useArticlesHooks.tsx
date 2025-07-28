@@ -18,17 +18,25 @@ export const useArticleSources = () => {
   return useQuery({
     queryKey: ['article-sources'],
     queryFn: () => newsApiService.getSources(),
-    // staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 }
+
+// export const useArticleCategories = () => {
+//   return useQuery({
+//     queryKey: ['article-categories'],
+//     queryFn: () => newsApiService.getCategories(),
+//     staleTime: 5 * 60 * 1000, // 5 minutes
+//   });
+// }
 
 export const useArticleFilter = (filters: IFilterArticle, enabled=false) => {
   const hasFilters = !!filters.sources || !!filters.category;
   return useQuery({
-    queryKey: ['article-sources', filters?.sources, filters?.category],
+    queryKey: ['filter-article', filters?.sources, filters?.category],
     queryFn: () => newsApiService.filterArticles(filters),
-    enabled: enabled && hasFilters
-    // staleTime: 5 * 60 * 1000, // 5 minutes
+    enabled: enabled && hasFilters,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 }
 
@@ -37,6 +45,13 @@ export const useArticleSearch = (filters: ISearchFilters, enabled = false) => {
     queryKey: filters.q ? ["articles-search", filters.q] : ['articles-search'] ,
     queryFn: () => newsApiService.searchArticles(filters),
     enabled: enabled && !!filters.q.trim(),
-    // staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+};
+
+export const useArticleSearchInitial = (filters: ISearchFilters, enabled = false) => {
+  return useQuery({
+    queryKey: filters.q ? ["articles-search", filters.q] : ['articles-search'] ,
+    queryFn: () => newsApiService.searchArticles(filters),
   });
 };

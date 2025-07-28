@@ -64,11 +64,15 @@ export class NewsApiService {
   }
 
   async getSources() {
-    return this.makeRequest("/top-headlines/sources");
+    return this.makeRequest("top-headlines/sources");
   }
+  
+  // async getCategories() {
+  //   return this.makeRequest("top-headlines/category");
+  // }
 
   async getAllArticles(params: { q: string }) {
-    return this.makeRequest("/top-headlines", {
+    return this.makeRequest("top-headlines", {
       q: params?.q,
     });
   }
@@ -79,7 +83,7 @@ export class NewsApiService {
     sources?: string;
     q?: string;
   }) {
-    return this.makeRequest("/top-headlines", {
+    return this.makeRequest("top-headlines", {
       ...(params?.country && { country: params.country }),
       ...(params?.category && { category: params.category }),
       ...(params?.sources && { sources: params.sources }),
@@ -87,15 +91,14 @@ export class NewsApiService {
   }
 
   async filterArticles(params?: { sources?: string; category?: string }) {
-    // console.log("params", params);
-    return this.makeRequest("/top-headlines", {
+    return this.makeRequest("top-headlines", {
       ...(params?.sources && { sources: params.sources }),
       ...(params?.category && { category: params.category }),
     });
   }
 
   async searchArticles(params: { q: string }) {
-    return this.makeRequest("/everything", {
+    return this.makeRequest("everything", {
       q: params.q,
     });
   }

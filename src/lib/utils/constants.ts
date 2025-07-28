@@ -1,5 +1,13 @@
 export const NEWS_API_ORG_KEY = process.env.NEXT_PUBLIC_NEWS_API_ORG_KEY;
 
+import { IoBusinessSharp } from "react-icons/io5";
+import { BiSolidParty } from "react-icons/bi";
+import { BiHealth } from "react-icons/bi";
+import { MdScience } from "react-icons/md";
+import { MdSportsGymnastics } from "react-icons/md";
+import { FaComputer } from "react-icons/fa6";
+import { HiMiniCog8Tooth } from "react-icons/hi2";
+
 export const sampleData = [
     {
         "source": {
@@ -248,4 +256,42 @@ export const sampleData = [
         "publishedAt": "2025-07-25T09:00:11Z",
         "content": "A pair of liberal media columns published this week dismissed the theory that the pending cancellation of \"The Late Show with Stephen Colbert\" is due to politics, arguing its due to the decline of la… [+3984 chars]"
     }
+]
+
+export const categoryOptions = [
+  {
+    value: 'business',
+    label: 'Business',
+    icon: IoBusinessSharp
+  },
+  {
+    value: 'entertainment',
+    label: 'Entertainment',
+    icon: BiSolidParty
+  },
+  {
+    value: 'general',
+    label: 'General',
+    icon: HiMiniCog8Tooth
+  },
+  {
+    value: 'health',
+    label: 'Health',
+    icon: BiHealth
+  },
+  {
+    value: 'science',
+    label: 'Science',
+    icon: MdScience
+  },
+  {
+    value: 'sports',
+    label: 'Sports',
+    icon: MdSportsGymnastics
+  },
+  {
+    value: 'technology',
+    label: 'Technology',
+    icon: FaComputer
+  },
 ]

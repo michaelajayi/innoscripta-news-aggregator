@@ -8,14 +8,18 @@ import Article from "./Article";
 interface FilteredArticlesProps {
   isLoading: boolean;
   error: Error | null;
-  data: INewsApiResult | undefined;
+  articles: INewsApiArticle[] | undefined;
+  count: number;
+  loadingText: string;
   selectedSources: { value: string; label: string }[];
 }
 
 const FilteredArticles = ({
   isLoading,
   error,
-  data,
+  articles,
+  count,
+  loadingText,
   selectedSources,
 }: FilteredArticlesProps) => {
   if (error) {
@@ -33,7 +37,7 @@ const FilteredArticles = ({
       <div className="w-full max-w-4xl px-10 py-10 mx-auto bg-white rounded-sm">
         <div className="flex flex-col space-y-10">
           <div className="text-2xl text-gray-600">
-            Filtering articles from:{" "}
+            {loadingText}
             {selectedSources.map((s) => s.label).join(", ")}
           </div>
         </div>
@@ -41,24 +45,22 @@ const FilteredArticles = ({
     );
   }
 
-  const articlesResponse = data as INewsArticlesResponse;
-  const articles = articlesResponse?.articles || [];
-  
-  console.log('articles', articles);
-  console.log(articles.length);
-
   return (
     <div className="w-full max-w-4xl px-10 py-10 mx-auto bg-white rounded-sm">
-      {articles.length > 0 ? (
+      {articles && articles.length > 0 ? (
         <div className="flex flex-col space-y-5">
           <div>
-            {selectedSources.length > 0 && (
-              <div className="text-2xl text-gray-600">
-                Found <strong>{articlesResponse.totalResults}</strong> Article
-                {articles.length > 0 ? "s" : ""} from:{" "}
-                {selectedSources.map((s) => s.label).join(", ")}
-              </div>
-            )}
+            <div className="text-2xl text-gray-600">
+              <span>
+                Found <strong>{count}</strong> Article
+                {articles.length > 0 ? "s" : ""}{" "}
+              </span>
+              {selectedSources && selectedSources.length > 0 ? (
+                <span>
+                  for: {selectedSources.map((s) => s.label).join(", ")}
+                </span>
+              ) : null}
+            </div>
           </div>
           <div className="flex flex-col space-y-10">
             {articles.map((article: INewsApiArticle, index: number) => (

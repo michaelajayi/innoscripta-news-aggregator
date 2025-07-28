@@ -1,58 +1,42 @@
-import useDebounce from "@/lib/hooks/useDebounce";
-import { INewsApiSearchResponse } from "@/lib/types/articles.interface";
-import { useState } from "react";
-import { MdCancel } from "react-icons/md";
-import Article from "./Article";
-import { useArticleSearch } from "@/lib/hooks/useArticlesHooks";
 import { IoMdInformationCircleOutline } from "react-icons/io";
+import { MdCancel } from "react-icons/md";
 
-const SearchArticle = () => {
-  const [searchQuery, setSearchQuery] = useState("");
+interface ISearchProps {
+  isSearchLoading: boolean,
+  searchError: Error | null;
+  searchQuery: string;
+  updateSearch: (q: string) => void;
+  searchRefetch: () => void;
+}
 
+const SearchArticle = ({ isSearchLoading, searchError, searchQuery, updateSearch, searchRefetch }: ISearchProps) => {
   // debounce the search query with 500ms delay
-  const debouncedSearchQuery = useDebounce(searchQuery.trim(), 500);
-
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
+    updateSearch(e.target.value);
   };
 
-  const { data, isLoading, refetch } = useArticleSearch({
-    q: debouncedSearchQuery,
-  });
-
-  // Add these debug logs
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    if (searchQuery.trim()) {
-      refetch();
-    }
+    console.log('I was clicked');
+    searchRefetch();
   };
-
+  
   const clearSearchQuery = () => {
-    setSearchQuery("");
+    updateSearch("");
   };
 
-  const searchResult = data as INewsApiSearchResponse;
-
-  // if (
-  //   !searchResult ||
-  //   searchResult.status === "error" ||
-  //   !searchResult.articles
-  // ) {
-  //   console.log("No result");
-  // }
+  if (searchError) return <div>An error occured - {searchError?.message}</div>
 
   return (
     <div className="w-full max-w-4xl mx-auto pt-5">
       <div className="flex flex-col space-y-1 p-5 rounded-sm">
-        {debouncedSearchQuery && (
+        {searchQuery && (
           <div className="text-5xl text-gray-600 capitalize my-5">
-            {debouncedSearchQuery}
+            {searchQuery}
           </div>
         )}
 
-        <div className="flex flex-col space-y-2 items-start w-full">
+        <div className="flex flex-col space-y-1 items-start w-full">
           <form
             className="flex flex-col space-y-3 my-5 bg-white p-5 w-full"
             onSubmit={handleSubmit}
@@ -64,10 +48,10 @@ const SearchArticle = () => {
                   name="search"
                   value={searchQuery}
                   placeholder="Search by keyword e.g. Apple"
-                  className="w-full h-full py-3 px-3 border-none outline-none"
+                  className="w-full h-full py-3 px-3 border-none outline-none focus:bg-white shadow-none"
                   onChange={handleSearchChange}
                 />
-                {debouncedSearchQuery && (
+                {searchQuery && (
                   <div
                     className="flex justify-center items-center absolute right-2 top-1/2 bottom-1/2 my-auto cursor-pointer"
                     onClick={clearSearchQuery}
@@ -79,7 +63,7 @@ const SearchArticle = () => {
               <div>
                 <button
                   type="submit"
-                  disabled={isLoading || !searchQuery.trim()}
+                  disabled={isSearchLoading || !searchQuery.trim()}
                   className="bg-black text-white py-3 px-5 rounded-md flex justify-center items-center border-none outline-none cursor-pointer"
                 >
                   Search
@@ -95,19 +79,6 @@ const SearchArticle = () => {
             </small>
           </div>
         </div>
-
-        {/* search result */}
-        {/* {isLoading ? (
-          <p>Searching...</p>
-        ) : (
-          <div className="flex flex-col space-y-10">
-            {searchResult?.articles &&
-              searchResult.articles.length > 0 &&
-              searchResult.articles.map((article, index) => (
-                <Article article={article} key={index} />
-              ))}
-          </div>
-        )} */}
       </div>
     </div>
   );
