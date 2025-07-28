@@ -39,10 +39,7 @@ const NewsAPIOrg = () => {
   const [loadingText, setLoadingText] = useState<string>("");
   const [totalCount, setTotalCount] = useState<number>(0);
   const [dateFilter, setDateFilter] = useState("newest");
-  const [showHamburger, setShowHamburger] = useState<boolean>(false);
-  const [filteredDateData, setFilteredDateData] = useState<
-    [INewsApiArticle] | null
-  >(null);
+  const [showHamburger, setShowHamburger] = useState<boolean>(true);
 
   const debouncedSearchQuery = useDebounce(searchQuery.trim(), 500);
 
@@ -236,7 +233,7 @@ const NewsAPIOrg = () => {
               </Link>
 
               <div className="lg:hidden flex cursor-pointer">
-                {showHamburger ? (
+                {!showHamburger ? (
                   <div onClick={() => setShowHamburger(!showHamburger)}>
                     <RiCloseLargeFill size={25} />
                   </div>
@@ -248,9 +245,8 @@ const NewsAPIOrg = () => {
               </div>
             </div>
 
-            {/* filter controls */}
-            {!isMobile && (
-              <div className="flex flex-col space-y-5 lg:space-y-10 w-full">
+            {/* filter controls - show on desktop always, on mobile only when hamburger is toggled */}
+            <div className={`w-full ${isMobile ? !showHamburger ? 'flex flex-col space-y-5' : 'hidden' : 'flex flex-col space-y-10'}`}>
                 <FilterBySources
                   selectedSources={selectedSources}
                   onSourcesChange={handleSourcesChange}
@@ -264,7 +260,6 @@ const NewsAPIOrg = () => {
                   updateDateFilter={(filter) => setDateFilter(filter)}
                 />
               </div>
-            )}
           </div>
         </section>
       </div>

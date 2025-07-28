@@ -1,4 +1,4 @@
-## Innoscript News Aggregregator Project - by Michael Ajayi
+## Innoscripta News Aggregregator Project - by Michael Ajayi
 
 and .env.local variable is required
 

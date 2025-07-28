@@ -38,7 +38,7 @@ const SearchArticle = ({ isSearchLoading, searchError, searchQuery, updateSearch
 
         <div className="flex flex-col space-y-1 items-start w-full">
           <form
-            className="flex flex-col space-y-2  p-5 w-full"
+            className="flex flex-col space-y-2 p-3 lg:p-5 w-full"
             onSubmit={handleSubmit}
           >
             <div className="w-full flex flex-col lg:flex-row space-y-3 lg:space-y-0 lg:space-x-2">
@@ -47,7 +47,7 @@ const SearchArticle = ({ isSearchLoading, searchError, searchQuery, updateSearch
                   type="text"
                   name="search"
                   value={searchQuery}
-                  placeholder="Search by keyword e.g. Apple Vision Pro"
+                  placeholder="Search by keyword e.g. Apple"
                   className="w-full h-full py-3 px-3 border-none outline-none focus:bg-white shadow-none rounded-md"
                   onChange={handleSearchChange}
                 />
