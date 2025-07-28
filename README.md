@@ -21,3 +21,5 @@ bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+PS: Seeing this is a take home assessment and done within a couple of days (MVP more so), there's enough room for improvement if given more time to work on it.
